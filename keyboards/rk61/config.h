@@ -30,6 +30,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* this will probably turn on the whole row when caps lock is active */
 //#define LED_CAPS_LOCK_PIN F4
 
+#define TAPPING_TERM 200
+#define COMBO_COUNT 2
+
+/* key combination for command */
+#define IS_COMMAND() ( \
+    get_mods() == (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_LGUI)) \
+)
 /* key matrix size */
 #define MATRIX_ROWS 5
 #define MATRIX_COLS 14
