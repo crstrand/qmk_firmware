@@ -1,4 +1,4 @@
-# rk61
+# Royal Kludge RK61 (revival)
 
 ![RK61](https://i.imgur.com/Q27Ttnf.jpg)  
 
