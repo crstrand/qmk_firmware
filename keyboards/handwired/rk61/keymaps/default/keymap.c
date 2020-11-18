@@ -30,14 +30,19 @@ enum rk61_keycodes {
     RK61_FN = SAFE_RANGE
 };
 
+bool fn_on = false;
+
 bool process_record_user (uint16_t keycode, keyrecord_t *record) {
-  // If console is enabled, it will print the matrix position and status of each key pressed
-#ifdef CONSOLE_ENABLE
-    uprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
-#endif
+    // return true to send the keycode to the Keyboard/Revision (_kb) level
+    // return false and the keycode stops here
+    // If console is enabled, it will print the matrix position and status of each key pressed
+    #ifdef CONSOLE_ENABLE
+        uprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
+    #endif
     if (keycode == RK61_FN) {
         if (record->event.pressed)
         {
+            fn_on = true;
             if (layer_state_is(_FN))
                 layer_on(_FN_ALL_NUM);
             else
@@ -45,51 +50,31 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record) {
         }
         else
         {
+            fn_on = false;
             layer_off(_FN_ALL);
             layer_off(_FN_ALL_NUM);
         }
         return false;
     }
+    if (record->event.pressed)
+    {
+        if(fn_on && keycode == KC_LCTL)
+        {
+            layer_invert(_FN);
+            return false;
+        }
+        if(fn_on && keycode == KC_RSFT)
+        {
+            layer_invert(_ARROWS);
+            return false;
+        }
+        if(fn_on && keycode == KC_LGUI)
+        {
+            keymap_config.no_gui = !keymap_config.no_gui;
+            return false;
+        }
+    }
     return true;
-}
-
-// Tap Dance declarations
-enum {
-    TD_GUI_ON,
-};
-
-// Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
-    // Tap once for Left GUI, twice for GUI key ON (in case you turned it off on any of the other layers)
-    [TD_GUI_ON] = ACTION_TAP_DANCE_DOUBLE(KC_LGUI, GUI_ON),
-};
-
-enum combos {
-  RS_L1,
-  LC_L2
-};
-
-// Combo section
-const uint16_t PROGMEM rs_combo[] = {KC_RSFT, RK61_FN, COMBO_END};
-const uint16_t PROGMEM lc_combo[] = {KC_LCTL, RK61_FN, COMBO_END};
-
-combo_t key_combos[COMBO_COUNT] = {
-  [RS_L1] = COMBO_ACTION(rs_combo),
-  [LC_L2] = COMBO_ACTION(lc_combo)
-};
-void process_combo_event(uint16_t combo_index, bool pressed) {
-  switch(combo_index) {
-    case RS_L1:
-      if (pressed) {
-        layer_invert(_ARROWS);
-      }
-      break;
-    case LC_L2:
-      if (pressed) {
-        layer_invert(_FN);
-      }
-      break;
-  }
 }
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -99,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS,
     KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,
     KC_LSFT,          KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,          KC_RSFT,
-    KC_LCTL, TD(TD_GUI_ON), KC_LALT,                            KC_SPC,                       KC_RALT, KC_CALC, KC_RCTL, RK61_FN
+    KC_LCTL, KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, KC_CALC, KC_RCTL, RK61_FN
   ),
   [_ARROWS] = LAYOUT_60_ansi(
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -120,14 +105,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, KC_P1   ,KC_P2   ,KC_P3   ,_______ ,_______ ,KC_PSCR ,KC_SLCK ,KC_PAUS ,_______ ,_______ ,_______ ,_______ ,_______,
     _______, KC_P4   ,KC_P5   ,KC_P6   ,_______ ,_______ ,KC_INS  ,KC_HOME ,KC_PGUP ,_______ ,_______ ,_______ ,         _______ ,
     _______,          KC_P7   ,KC_P8   ,KC_P9   ,_______ ,_______ ,KC_DEL  ,KC_END  ,KC_PGDN ,_______ ,KC_UP   ,         _______ ,
-    _______, GUI_OFF ,KC_P0                              ,_______                            ,KC_LEFT ,KC_DOWN ,KC_RGHT ,_______
+    _______, _______ ,KC_P0                              ,_______                            ,KC_LEFT ,KC_DOWN ,KC_RGHT ,_______
   ),
   [_FN_ALL_NUM] = LAYOUT_60_ansi(
     KC_GRV , KC_1    ,KC_2    ,KC_3    ,KC_4    ,KC_5    ,KC_6    ,KC_7    ,KC_8    ,KC_9    ,KC_0    ,KC_MINS ,KC_EQL  ,KC_DEL,
     _______, KC_P1   ,KC_P2   ,KC_P3   ,_______ ,_______ ,KC_PSCR ,KC_SLCK ,KC_PAUS ,_______ ,_______ ,_______ ,_______ ,_______,
     _______, KC_P4   ,KC_P5   ,KC_P6   ,_______ ,_______ ,KC_INS  ,KC_HOME ,KC_PGUP ,_______ ,_______ ,_______ ,         _______ ,
     _______,          KC_P7   ,KC_P8   ,KC_P9   ,_______ ,_______ ,KC_DEL  ,KC_END  ,KC_PGDN ,_______ ,KC_UP   ,         _______ ,
-    _______, GUI_OFF ,KC_P0                              ,_______                            ,KC_LEFT ,KC_DOWN ,KC_RGHT ,_______
+    _______, _______ ,KC_P0                              ,_______                            ,KC_LEFT ,KC_DOWN ,KC_RGHT ,_______
   )
 
 };

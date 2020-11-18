@@ -1,5 +1,5 @@
 /*
-Copyright 2020 gtips
+Copyright 2020 crstrand
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,10 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DESCRIPTION A 61-key keyboard
 
 /* this will probably turn on the whole row when caps lock is active */
-//#define LED_CAPS_LOCK_PIN F4
-
+#define LED_CAPS_LOCK_PIN F4
+#define LED_PIN_ON_STATE 1  // high state = LED ON
 #define TAPPING_TERM 200
-#define COMBO_COUNT 2
 #define BOOTMAGIC_LITE_ROW 4
 #define BOOTMAGIC_LITE_COLUMN 13
 
@@ -39,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define IS_COMMAND() ( \
     get_mods() == (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_LGUI)) \
 )
-/* key matrix size */
+trix size */
 #define MATRIX_ROWS 5
 #define MATRIX_COLS 14
 
