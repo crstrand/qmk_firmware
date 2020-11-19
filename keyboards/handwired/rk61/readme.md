@@ -10,7 +10,7 @@ Here is the row/column layout of the PCB
 ![Row_Column](https://i.imgur.com/ILBRluu.jpg)
 
 This is the finished wiring
-![RK61_Pro_Micro_wiring](https://i.imgur.com/RuX8a6s.jpg)
+![RK61_Pro_Micro_wiring](https://i.imgur.com/3Ook5fh.jpg)
 I reinforced the microUSB connector on the Pro Micro with some epoxy.<br>The Pro Micro has Kapton tape on the back and is held in place with hot-melt glue.<br>
 The microUSB connector will sit about 4mm lower in the case, so modification of the hole in the case is required to make room for the microUSB cable's connector.<br>
 I also removed the bluetooth module, the battery connector, the destroyed LiPo charging chip, and a destroyed capacitor.
