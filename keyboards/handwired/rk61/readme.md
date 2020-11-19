@@ -9,6 +9,9 @@ I removed the processor and the micro USB connector and replaced both with an Ar
 Here is the row/column layout of the PCB
 ![Row_Column](https://i.imgur.com/ILBRluu.jpg)
 
+Schematic for one column LED and 4 switches
+![Partial Schematic](https://i.imgur.com/kl1XOTi.png)
+
 This is the finished wiring
 ![RK61_Pro_Micro_wiring](https://i.imgur.com/3Ook5fh.jpg)
 I reinforced the microUSB connector on the Pro Micro with some epoxy.<br>The Pro Micro has Kapton tape on the back and is held in place with hot-melt glue.<br>
