@@ -28,6 +28,6 @@ COMBO_ENABLE = no
 EXTRAKEY_ENABLE = yes       # Audio control and System control (for KC_CALC to work)
 BOOTMAGIC_ENABLE = lite     # Fn key while powering on will enter bootloader
 COMMAND_ENABLE = yes        # Commands for debug and configuration
-CONSOLE_ENABLE = yes        # Console for debug
+CONSOLE_ENABLE = no         # Console for debug
 
 LAYOUTS = 60_ansi

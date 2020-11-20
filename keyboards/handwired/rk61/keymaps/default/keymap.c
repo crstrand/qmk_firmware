@@ -19,10 +19,8 @@
 enum layer_names {
   _BASE,
   _ARROWS,
-  _ARROWS_N,
   _FN_ROW,
-  _FN_ALL,
-  _FN_ALL_NUM
+  _SPECIAL
 };
 
 // custom keycode section
@@ -32,6 +30,8 @@ enum rk61_keycodes {
 };
 
 bool fn_on = false;
+bool fn_row;
+bool ar_row;
 
 bool process_record_user (uint16_t keycode, keyrecord_t *record) {
     // return true to send the keycode to the Keyboard/Revision (_kb) level
@@ -44,32 +44,59 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record) {
         if (record->event.pressed)
         {
             fn_on = true;
-            if (layer_state_is(_FN_ROW))
-                layer_on(_FN_ALL_NUM);
+            // record current state of function row and arrows layers
+            fn_row = layer_state_is(_FN_ROW);
+            ar_row = layer_state_is(_ARROWS);
+            if (fn_row)
+                layer_off(_FN_ROW);
             else
-                layer_on(_FN_ALL);
-            if (layer_state_is(_ARROWS))
-                layer_on(_ARROWS_N);
+                layer_on(_FN_ROW);
+
+            if (ar_row)
+                layer_off(_ARROWS);
+            else
+                layer_on(_ARROWS);
+            layer_on(_SPECIAL);
         }
-        else
+        else // Fn key is released. Restore the states recorded on key down
         {
             fn_on = false;
-            layer_off(_FN_ALL);
-            layer_off(_FN_ALL_NUM);
-            layer_off(_ARROWS_N);
+            if (fn_row)
+                layer_on(_FN_ROW);
+            else
+                layer_off(_FN_ROW);
+
+            if (ar_row)
+                layer_on(_ARROWS);
+            else
+                layer_off(_ARROWS);
+            layer_off(_SPECIAL);
         }
         return false;
     }
+    // toggle function row or arrows layers
     if (record->event.pressed)
     {
         if(fn_on && keycode == KC_LCTL)
         {
-            layer_invert(_FN_ROW);
+            // invert the state that existed when we started pressing the Fn key
+            if (fn_row)
+                layer_off(_FN_ROW);
+            else
+                layer_on(_FN_ROW);
+            // update the state so releasing the Fn key doesn't undo our change
+            fn_row = layer_state_is(_FN_ROW);
             return false;
         }
         if(fn_on && keycode == KC_RSFT)
         {
-            layer_invert(_ARROWS);
+            // invert the state that existed when we started pressing the Fn key
+            if (ar_row)
+                layer_off(_ARROWS);
+            else
+                layer_on(_ARROWS);
+            // update the state so releasing the Fn key doesn't undo our change
+            ar_row = layer_state_is(_ARROWS);
             return false;
         }
         if(fn_on && keycode == KC_LGUI)
@@ -97,29 +124,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______,          _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_UP  ,          _______,
     _______, _______, _______,                            _______,                            KC_LEFT, KC_DOWN, KC_RGHT, _______
   ),
-  [_ARROWS_N] = LAYOUT_60_ansi(
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-    _______,          _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_SLSH,          _______,
-    _______, _______, _______,                            _______,                            KC_RALT, KC_CALC, KC_RCTL, _______
-  ),
   [_FN_ROW] = LAYOUT_60_ansi(
-    _______ , KC_F1   ,KC_F2   ,KC_F3   ,KC_F4   ,KC_F5   ,KC_F6   ,KC_F7   ,KC_F8   ,KC_F9   ,KC_F10  ,KC_F11  ,KC_F12  ,KC_DEL,
+    _______ , KC_F1   ,KC_F2   ,KC_F3   ,KC_F4   ,KC_F5   ,KC_F6   ,KC_F7   ,KC_F8   ,KC_F9   ,KC_F10  ,KC_F11  ,KC_F12 ,_______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
     _______,          _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
     _______, _______, _______,                            _______,                            _______, _______, _______, _______
   ),
-  [_FN_ALL] = LAYOUT_60_ansi(
-    KC_GRV , KC_F1   ,KC_F2   ,KC_F3   ,KC_F4   ,KC_F5   ,KC_F6   ,KC_F7   ,KC_F8   ,KC_F9   ,KC_F10  ,KC_F11  ,KC_F12  ,KC_DEL,
-    _______, KC_P1   ,KC_P2   ,KC_P3   ,_______ ,_______ ,KC_PSCR ,KC_SLCK ,KC_PAUS ,_______ ,_______ ,_______ ,_______ ,_______,
-    _______, KC_P4   ,KC_P5   ,KC_P6   ,_______ ,_______ ,KC_INS  ,KC_HOME ,KC_PGUP ,_______ ,_______ ,_______ ,         _______ ,
-    _______,          KC_P7   ,KC_P8   ,KC_P9   ,_______ ,_______ ,KC_DEL  ,KC_END  ,KC_PGDN ,_______ ,_______ ,         _______ ,
-    _______, _______ ,KC_P0                              ,_______                            ,_______ ,_______ ,_______ ,_______
-  ),
-  [_FN_ALL_NUM] = LAYOUT_60_ansi(
-    KC_GRV , KC_1    ,KC_2    ,KC_3    ,KC_4    ,KC_5    ,KC_6    ,KC_7    ,KC_8    ,KC_9    ,KC_0    ,KC_MINS ,KC_EQL  ,KC_DEL,
+  [_SPECIAL] = LAYOUT_60_ansi(
+    KC_GRV , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_DEL,
     _______, KC_P1   ,KC_P2   ,KC_P3   ,_______ ,_______ ,KC_PSCR ,KC_SLCK ,KC_PAUS ,_______ ,_______ ,_______ ,_______ ,_______,
     _______, KC_P4   ,KC_P5   ,KC_P6   ,_______ ,_______ ,KC_INS  ,KC_HOME ,KC_PGUP ,_______ ,_______ ,_______ ,         _______ ,
     _______,          KC_P7   ,KC_P8   ,KC_P9   ,_______ ,_______ ,KC_DEL  ,KC_END  ,KC_PGDN ,_______ ,_______ ,         _______ ,
