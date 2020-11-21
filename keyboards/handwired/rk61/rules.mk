@@ -29,5 +29,6 @@ EXTRAKEY_ENABLE = yes       # Audio control and System control (for KC_CALC to w
 BOOTMAGIC_ENABLE = lite     # Fn key while powering on will enter bootloader
 COMMAND_ENABLE = yes        # Commands for debug and configuration
 CONSOLE_ENABLE = yes        # Console for debug
-//CUSTOM_MATRIX = lite
+CUSTOM_MATRIX = lite
+SRC += matrix.c
 LAYOUTS = 60_ansi

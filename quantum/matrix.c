@@ -88,14 +88,7 @@ static void init_pins(void) {
         setPinInputHigh(col_pins[x]);
     }
 }
-#if LOWER_COLUMN_FOR_LED
-static void select_col(uint8_t col) {
-    setPinOutput(col_pins[col]);
-    writePinLow(col_pins[col]);
-}
 
-static void unselect_col(uint8_t col) { setPinInputHigh(col_pins[col]); }
-#endif
 static bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row) {
     // Start with a clear matrix row
     matrix_row_t current_row_value = 0;
@@ -108,15 +101,9 @@ static bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row)
     for (uint8_t col_index = 0; col_index < MATRIX_COLS; col_index++) {
         // Select the col pin to read (active low)
         uint8_t pin_state = readPin(col_pins[col_index]);
+
         // Populate the matrix row with the state of the col pin
         current_row_value |= pin_state ? 0 : (MATRIX_ROW_SHIFTER << col_index);
-#if LOWER_COLUMN_FOR_LED
-        // set LED column 0 low (on) for one loop
-        select_col(col_index); // set column to output low to turn on LED if ROWLED line is low
-        unselect_col((col_index>0?col_index-1:MATRIX_COLS-1)); // set previous column back to input pullup.
-        // After the column loop, something else happens that causes the last column to remain lit for longer than the rest
-        //   this causes it to look brighter than the other keys.
-#endif
     }
 
     // Unselect row
