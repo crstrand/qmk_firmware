@@ -30,6 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* this will probably turn on the whole row when caps lock is active */
 #define LED_CAPS_LOCK_PIN F4
 #define LED_PIN_ON_STATE 1  // high state = LED ON
+#define LOWER_COLUMN_FOR_LED 1 // WARNING: This accompanies a custom quantum/matrix.c file
+
 #define TAPPING_TERM 200
 #define BOOTMAGIC_LITE_ROW 4
 #define BOOTMAGIC_LITE_COLUMN 13
