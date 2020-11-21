@@ -88,7 +88,7 @@ static void init_pins(void) {
         setPinInputHigh(col_pins[x]);
     }
 }
-//#define LOWER_COLUMN_FOR_LED 1
+#define LOWER_COLUMN_FOR_LED 1
 #if LOWER_COLUMN_FOR_LED
 static void select_col(uint8_t col) {
     setPinOutput(col_pins[col]);
@@ -113,10 +113,10 @@ static bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row)
         current_row_value |= pin_state ? 0 : (MATRIX_ROW_SHIFTER << col_index);
 #if LOWER_COLUMN_FOR_LED
         // set LED column 0 low (on) for one loop
-        if(col_index==0) // col=0, row=2 = caps_lock
-            select_col(col_index); // set column to output low to turn on LED if ROWLED line is low
-        if(col_index>0)
-            unselect_col(col_index); // set column input pullup.  matrix_io_delay probably not needed because it has 13 columns to settle before being read again
+        select_col(col_index); // set column to output low to turn on LED if ROWLED line is low
+        unselect_col((col_index>0?col_index-1:MATRIX_COLS-1)); // set previous column back to input pullup.
+        // After the column loop, something else happens that causes the last column to remain lit for longer than the rest
+        //   this causes it to look brighter than the other keys.
 #endif
     }
 
