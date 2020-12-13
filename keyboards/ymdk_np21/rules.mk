@@ -18,4 +18,4 @@ BACKLIGHT_ENABLE = yes      # Enable keyboard backlight functionality
 RGBLIGHT_ENABLE = yes       # Enable keyboard RGB underglow
 WS2812_DRIVER = i2c
 
-LAYOUTS = ortho_4x6
+LAYOUTS = ortho_4x6L

@@ -48,15 +48,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 #define LAYOUT_ortho_4x6L( \
-    k05, k04, k03, k02, k01, k00, \
-    k15, k14, k13, k12, k11, k10, \
-    k25, k24, k23, k22, k21, k20, \
-    k35, k34, k33, k32, k31, k30 \
+      k30, k31, k32, k33, k34, k35 , \
+      k20, k21, k22, k23, k24, k25 , \
+      k10, k11, k12, k13, k14, k15 , \
+      k00, k01, k02, k03, k04, k05   \
 ) { \
-    { k05, k04, k03, k02, k01, k00 }, \
-    { k15, k14, k13, k12, k11, k10 }, \
-    { k25, k24, k23, k22, k21, k20 }, \
-    { k35, k34, k33, k32, k31, k30 } \
+    { k00, k01, k02, k03, k04, k05 }, \
+    { k10, k11, k12, k13, k14, k15 }, \
+    { k20, k21, k22, k23, k24, k25 }, \
+    { k30, k31, k32, k33, k34, k35 } \
 }
 
 #define LAYOUT_numpad_6x4( \
@@ -73,4 +73,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     { k30, k31, XXX, k33, XXX, k35 } \
 }
 
-#define LAYOUT LAYOUT_ortho_4x6
+#define LAYOUT LAYOUT_ortho_4x6L

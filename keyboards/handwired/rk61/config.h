@@ -30,8 +30,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* this will probably turn on the whole row when caps lock is active */
 #define LOWER_COLUMN_FOR_LED 1 // WARNING: This accompanies a custom quantum/matrix.c file
 
+#define RK61_BACKLIGHT B6 // 10 PWM pin
 #define BACKLIGHT_PIN E4 // GPIO E4 is not brought out to a pin on the Atmega32U4, but we'll use it as a flag for backlight status
-#define BACKLIGHT_LEVELS 1
+#define BACKLIGHT_LEVELS 4
 #define BACKLIGHT_ON_STATE 1
 
 #define TAPPING_TERM 200
@@ -58,8 +59,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #define MATRIX_ROW_PINS { D7, E6, B4, B5, D5 }
 // Arduino Pro Micro       6,  7,  8,  9, 22(TXLED)
+/*
 #define MATRIX_COL_PINS { F5, F6, F7, B1, B3, B2, B6, B0, C6, D4, D0, D1, D2, D3}
-// Arduino Pro Micro      20, 19, 18, 15, 14, 16, 10,  8,  5,  4,  3,  2,  0,  1  (RXLED=8=C6)
+// Arduino Pro Micro      20, 19, 18, 15, 14, 16, 10,  8,  5,  4,  3,  2,  0,  1  (RXLED=8=C6)*/
+#define MATRIX_COL_PINS { F4, F5, F6, F7, B1, B3, B2, B0, C6, D4, D0, D1, D2, D3}
+// Arduino Pro Micro      21, 20, 19, 18, 15, 14, 16,  8,  5,  4,  3,  2,  0,  1  (RXLED=8=C6)
 
 #define UNUSED_PINS
 
